@@ -1,3 +1,4 @@
+#Jérémy, Étienne
 import time
 from naoqi import ALProxy
 

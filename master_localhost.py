@@ -12,7 +12,7 @@ import threading
 #Variables
 #--------------------------------------
 
-robotIP = "192.168.0.15"
+robotIP = "127.0.0.1"
 port = 9559
 temps_choregraphie = 104
 

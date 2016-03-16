@@ -12,7 +12,7 @@ import threading
 #Variables
 #--------------------------------------
 
-robotIP = "192.168.0.15"
+robotIP = "127.0.0.1"
 port = 9559
 temps_choregraphie = 104
 
@@ -61,13 +61,13 @@ def musique():
 	player.stopAll()
 
 def chanter():
-	time.sleep(43.5)
+	time.sleep(43.25)
 	tts.setParameter("pitchShift", 1)
 	tts.setParameter("speed",90 )
 	tts.say("\\vol=100\\Never gonna \\rspd=55\\ give you up. \\rspd=90\\ Never gonna \\rspd=55\\ let you \\rspd=60\\ down. \\rspd=90\\ Never gonna \\rspd=50\\ run around \\rspd=50\\ and. \\rspd=70\\ desert you")
 	time.sleep(.3)
 	tts.say("\\vol=100\\\\rspd=90\\ Never gonna \\rspd=70\\ make you \\emph=2\\ cry. \\rspd=90\\ Never gonna \\rspd=60\\ say \\emph=2\\\\rspd=80\\ good \\rspd=55\\ bye \\eos=1\\\\rspd=90\\ Never gonna \\rspd=60\\ tell \\rspd=70\\ a \\rspd=50\\ lie \\eos=1\\ \\rspd=60\\ and hurt \\rspd=60\\ you. ")
-	time.sleep(25.2)
+	time.sleep(25)
 	tts.say("\\vol=100\\Never gonna \\rspd=55\\ give you up \\eos=1\\\\rspd=90\\ Never gonna \\rspd=55\\ let you \\rspd=50\\\\emph=2\\ down.\\rspd=90\\ Never gonna \\rspd=50\\ run around \\rspd=50\\ and. \\rspd=70\\ desert you")
 	time.sleep(.3)
 	tts.say("\\vol=100\\\\rspd=90\\ Never gonna \\rspd=70\\ make you cry. \\rspd=90\\ Never gonna \\rspd=60\\ say \\emph=2\\\\rspd=80\\ good \\rspd=55\\ bye \\vol=100\\\\eos=1\\\\rspd=90\\ Never gonna \\rspd=60\\ tell \\rspd=70\\ a \\rspd=50\\ lie \\eos=1\\ \\rspd=60\\ and hurt \\rspd=60\\ you. ")
@@ -77,10 +77,10 @@ def chanter():
 #--------------------------------------
 
 LHand = 0.00
-tts.say("Press my left hand!")
+tts.say("Press my head!")
 
 while (LHand == 0.00):
-	LHand = memoryProxy.getData("Device/SubDeviceList/LHand/Touch/Back/Sensor/Value")
+	LHand = memoryProxy.getData("Device/SubDeviceList/Head/Touch/Middle/Sensor/Value")
 print "Début de la chorégraphie."
 
 #--------------------------------------
@@ -217,16 +217,100 @@ time.sleep(1)
 
 #--------------------------------------
 
-move_un()
+def mouvementCheville():
+	mouvement("LLeg", "LAnklePitch", -68, 0.1)
+	mouvement("RLeg", "RAnklePitch", -68, 0.1)
+	time.sleep(1)
+
+def mouvementGenou():
+	mouvement("LLeg", "LKneePitch", 121, 0.2)
+	mouvement("RLeg", "RKneePitch", 121, 0.2)
+	time.sleep(1)
+
+def penche():
+	mouvement("RLeg", "RHipPitch", -40, 0.1)
+	mouvement("LLeg", "LHipPitch", -40, 0.1)
+	time.sleep(1)
+
+def pencheAvant():
+	mouvement("RLeg", "RHipPitch", -30, 0.1)
+	mouvement("LLeg", "LHipPitch", -30, 0.1)
+	time.sleep(1)
+
+def leverBras():
+	mouvement("RArm", "RShoulderPitch", 121, 0.1)
+	mouvement("LArm", "LShoulderPitch", -121, 0.1)
+	time.sleep(1)
+
+def fermerMainGauche():
+    motionProxy.closeHand("LHand")
+
+thread_penche = threading.Thread(None, penche, None)
+thread_penche.start()
+
+thread_mouvementCheville = threading.Thread(None, mouvementCheville, None)
+#thread_mouvementCheville.start()
+
+thread_mouvementGenou = threading.Thread(None, mouvementGenou, None)
+#thread_mouvementGenou.start()
+
+thread_leverBras = threading.Thread(None, leverBras, None)
+thread_leverBras.start()
+
+thread_fermerMainGauche = threading.Thread(None, fermerMainGauche, None)
+thread_fermerMainGauche.start()
+
+motionProxy.closeHand("RHand")
+
+time.sleep(1)
+mouvement("Head", "HeadPitch", -38, 0.1)
+motionProxy.openHand("LHand")
+time.sleep(2)
+postureProxy.goToPosture("Stand", 0.5)	
+time.sleep(3)
+
+#--------------------------------------
+
+mouvement("LArm", "LElbowYaw", -85, 0.6)
+mouvement("LArm", "LElbowRoll", -40,0.6)
+mouvement("LArm", "LShoulderRoll", -40,0.6)
+mouvement("RArm", "RShoulderRoll", -40,0.6)
+mouvement("Head", "HeadPitch", 10, 0.6)
+mouvement("Head", "HeadYaw", -13, 0.6)
+time.sleep(1)
+mouvement("LArm", "LWristYaw", 40,0.6)
+mouvement("LArm", "LElbowRoll", 40,0.6)
+mouvement("LArm", "LShoulderRoll", 40,0.6)
+mouvement("RArm", "RWristYaw", -40,0.6)
+mouvement("RArm", "RShoulderRoll", -40,0.6)
+mouvement("Head", "HeadPitch", 10,0.5)
+mouvement("Head", "HeadYaw", 5,0.5)
+time.sleep(1)
+mouvement("LArm", "LShoulderPitch", -40,0.6)
+mouvement("LArm", "LElbowYaw", -40,0.6)
+mouvement("LArm", "LShoulderRoll", -40,0.6)
+mouvement("RArm", "RShoulderPitch", 40,0.6)
+mouvement("RArm", "RShoulderRoll", 40,0.6)
+mouvement("Head", "HeadPitch", -5,0.5)
+mouvement("Head", "HeadYaw", 10,0.5)
+time.sleep(1)
+mouvement("LArm", "LShoulderPitch", -40,0.6)
+mouvement("LArm", "LWristYaw",40,0.6)
+mouvement("LArm", "LShoulderRoll", 40,0.6)
+mouvement("RArm", "RShoulderPitch", -40,0.6)
+mouvement("RArm", "RWristYaw",-40,0.6)
+mouvement("RArm", "RShoulderRoll", -40,0.6)
+mouvement("Head", "HeadYaw", 10,0.5)
+mouvement("Head", "HeadPitch", 10,0.5)
+time.sleep(1)
+postureProxy.goToPosture("Stand", 0.5)	
+time.sleep(1)
 
 #--------------------------------------
 
 move_trois()
 tete()
-time.sleep(1)
-postureProxy.goToPosture("Stand", 0.5)
-
-#--------------------------------------
+move_un()
 
 import atexit
 atexit.register(fermer)
